@@ -1,0 +1,35 @@
+<%!
+	import BTEdb, time
+%>
+<%
+	db = BTEdb.Database("/dev/shm/lainchan-scraper.json")
+	dumped = db.Dump("table")
+	dumped.sort(key = lambda x: x["time"])
+%>
+<!doctype html>
+<html>
+	<head>
+		<title>Lainchan scraper for IPFS IDs</title>
+		<link rel="stylesheet" href="/style.css" />
+		<link rel="stylesheet" href="https://lainchan.org/stylesheets/code/dark.css" />
+		<script type="text/javascript" src="https://lainchan.org/js/jquery.min.js"></script>
+		<script type="text/javascript" src="https://lainchan.org/js/prettify.js"></script>
+		<script type="text/javascript" src="https://lainchan.org/js/hilight.js"></script>
+	</head>
+	<body>
+		<h1>IPFS Scraper</h1>
+		<div id="content">
+			% for post in dumped[::-1]:
+				<div class="post">
+					<a class="postlink" href="https://lainchan.org/${post["board"]}/res/${post["parent_thread_id"]}.html#q${post["post"]}" target="_blank">Post</a> -
+					<a class="ipfslink-public" href="https://ipfs.io/ipfs/${post["match"]}">public</a>
+					<a class="ipfslink-local" href="http://localhost:8080/ipfs/${post["match"]}">local</a> -
+					${post["match"]}
+					<span class="date">${time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(post["time"]))}</span>
+					<div class="embedded">${post["text"].replace(u"\u03bb", "lam").replace('href="/' + post["board"], 'href="https://lainchan.org/' + post["board"])}</div>
+				</div>
+			% endfor
+		</div>
+		<div id="footer">Niles Rogoff 2016</div>
+	</body>
+</html>
