@@ -15,9 +15,21 @@
 		<script type="text/javascript" src="https://lainchan.org/js/jquery.min.js"></script>
 		<script type="text/javascript" src="https://lainchan.org/js/prettify.js"></script>
 		<script type="text/javascript" src="https://lainchan.org/js/hilight.js"></script>
+		<script>
+			$( document ).ready(function() {
+				var s = document.getElementsByClassName("date");
+				for (var i = 0; i < s.length; i++) {
+					var el = s[i];
+					d = new Date(parseInt(el.innerHTML + "000")); // uses milliseconds, hence the extra 000
+					/*el.innerHTML = d.toLocaleDateString() + " " + d.toLocaleTimeString();*/
+					el.innerHTML = d.toLocaleTimeString() + " " + d.toLocaleDateString();
+				}
+			});
+		</script>
 	</head>
 	<body>
 		<h1>IPFS Scraper</h1>
+		<div id="status">${open("/dev/shm/lainchan-scraper-status", "r").read()}</div>
 		<div id="content">
 			% for post in dumped[::-1]:
 				<div class="post">
@@ -25,11 +37,15 @@
 					<a class="ipfslink-public" href="https://ipfs.io/ipfs/${post["match"]}">public</a>
 					<a class="ipfslink-local" href="http://localhost:8080/ipfs/${post["match"]}">local</a> -
 					${post["match"]}
-					<span class="date">${time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(post["time"]))}</span>
+					<span class="date">${post["time"]}</span>
 					<div class="embedded">${post["text"].replace(u"\u03bb", "lam").replace('href="/' + post["board"], 'href="https://lainchan.org/' + post["board"])}</div>
 				</div>
 			% endfor
+			<br />
+			Note that only /tech/ and /&lambda;/ are scraped at this time.<br />
+			The source can be found on <a href="https://gitla.in/nilesrogoff/lain-ipfs-scraper/">gitla.in/nilesrogoff/lain-ipfs-scraper</a><br />
+			Hypothetically it should be compatable with any vichan compatable bbs.
 		</div>
-		<div id="footer">Niles Rogoff 2016</div>
+		<div id="footer">Niles Rogoff 2016<br /><a href="https://pgp.mit.edu/pks/lookup?op=vindex&search=0xB78B908F23430F80">2048R/23430F80</a></div>
 	</body>
 </html>
