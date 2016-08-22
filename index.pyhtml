@@ -17,11 +17,13 @@
 		<script type="text/javascript" src="https://lainchan.org/js/hilight.js"></script>
 		<script>
 			$( document ).ready(function() {
+				// On document ready, find all date elements
 				var s = document.getElementsByClassName("date");
 				for (var i = 0; i < s.length; i++) {
+					// Foreach el in document.find(".date")
 					var el = s[i];
 					d = new Date(parseInt(el.innerHTML + "000")); // uses milliseconds, hence the extra 000
-					/*el.innerHTML = d.toLocaleDateString() + " " + d.toLocaleTimeString();*/
+					// change the html of el from an epoch to the formatted local time and date of that epoch
 					el.innerHTML = d.toLocaleTimeString() + " " + d.toLocaleDateString();
 				}
 			});
@@ -31,13 +33,16 @@
 		<h1>IPFS Scraper</h1>
 		<div id="status">${open("/dev/shm/lainchan-scraper-status", "r").read()}</div>
 		<div id="content">
+			<!-- reverse dumped -->
 			% for post in dumped[::-1]:
 				<div class="post">
+					<!-- Generate a link back to the lainchan thread, as well as links to download the ipfs hash from multiple sources, and print the hash itself. -->
 					<a class="postlink" href="https://lainchan.org/${post["board"]}/res/${post["parent_thread_id"]}.html#q${post["post"]}" target="_blank">Post</a> -
 					<a class="ipfslink-public" href="https://ipfs.io/ipfs/${post["match"]}">public</a>
 					<a class="ipfslink-local" href="http://localhost:8080/ipfs/${post["match"]}">local</a> -
 					${post["match"]}
 					<span class="date">${post["time"]}</span>
+					<!-- We must escape the lambda because either mako, mako-server or paste refuses to print unicode characters -->
 					<div class="embedded">${post["text"].replace(u"\u03bb", "lam").replace('href="/' + post["board"], 'href="https://lainchan.org/' + post["board"])}</div>
 				</div>
 			% endfor
