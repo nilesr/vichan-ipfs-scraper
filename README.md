@@ -1,1 +1,1 @@
-This script scrapes a vichan-based imageboard of your choosing for IPFS links. Running live [https://ipfs.niles.xyz/](here)
+This script scrapes a vichan-based imageboard of your choosing for IPFS links. Running live [here](https://ipfs.niles.xyz/)
